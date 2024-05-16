@@ -1,0 +1,219 @@
+-- Assignment 5
+-- 1.
+-- (a)
+SELECT
+  NAME,
+  PHONE_NO,
+  CUST_NO
+FROM
+  CUSTOMER
+WHERE
+  CUST_NO = (
+    SELECT
+      CUST_NO
+    FROM
+      DEPOSITOR
+    WHERE
+      ACCOUNT_NO = 'A0004'
+  );
+
+-- (b) 
+SELECT
+  NAME
+FROM
+  CUSTOMER
+WHERE
+  CUST_NO NOT IN (
+    SELECT
+      CUST_NO
+    FROM
+      LOAN
+  );
+
+-- (c)
+SELECT
+  BRANCH_CITY
+FROM
+  BRANCH
+WHERE
+  BRANCH_CODE IN (
+    SELECT
+      BRANCH_CODE
+    FROM
+      LOAN
+    WHERE
+      CUST_NO IN (
+        SELECT
+          CUST_NO
+        FROM
+          CUSTOMER
+        WHERE
+          NAME = 'ASLESHA TIWARI'
+      )
+  );
+
+-- (d)
+--  This query is fetching installment information for loans associated with the customer
+--  named 'ANKITA SINGH'.
+SELECT
+  *
+FROM
+  INSTALLMENT
+WHERE
+  LOAN_NO IN (
+    SELECT
+      LOAN_NO
+    FROM
+      LOAN
+    WHERE
+      CUST_NO IN (
+        SELECT
+          CUST_NO
+        FROM
+          CUSTOMER
+        WHERE
+          NAME = 'ANKITA SINGH'
+      )
+  );
+
+-- (e)
+--  This SQL query is retrieving the branch name and city of the branches where a customer named
+--  'ABHIJIT MISHRA' has an account.
+SELECT
+  BRANCH_NAME,
+  BRANCH_CITY
+FROM
+  BRANCH
+WHERE
+  BRANCH_CODE IN (
+    SELECT
+      BRANCH_CODE
+    FROM
+      ACCOUNT
+    WHERE
+      ACCOUNT_NO IN (
+        SELECT
+          ACCOUNT_NO
+        FROM
+          DEPOSITOR
+        WHERE
+          CUST_NO IN (
+            SELECT
+              CUST_NO
+            FROM
+              CUSTOMER
+            WHERE
+              NAME = 'ABHIJIT MISHRA'
+          )
+      )
+  );
+
+-- 2.
+-- (a)
+SELECT
+  LOAN_NO
+FROM
+  LOAN,
+  BRANCH
+WHERE
+  LOAN.BRANCH_CODE = BRANCH.BRANCH_CODE
+  AND BRANCH_CITY = 'MUMBAI';
+
+-- OR
+SELECT
+  LOAN.LOAN_NO
+FROM
+  LOAN
+  JOIN BRANCH ON LOAN.BRANCH_CODE = BRANCH.BRANCH_CODE
+WHERE
+  BRANCH.BRANCH_CITY = 'MUMBAI';
+
+-- (b)
+SELECT
+  TYPE
+FROM
+  ACCOUNT,
+  BRANCH
+WHERE
+  ACCOUNT.BRANCH_CODE = BRANCH.BRANCH_CODE
+  AND BRANCH_CITY = 'DELHI';
+
+-- OR
+SELECT
+  ACCOUNT.TYPE
+FROM
+  ACCOUNT
+  JOIN BRANCH ON ACCOUNT.BRANCH_CODE = BRANCH.BRANCH_CODE
+WHERE
+  BRANCH.BRANCH_CITY = 'DELHI';
+
+-- (c)
+SELECT
+  I.INST_NO,
+  I.INST_AMOUNT
+FROM
+  INSTALLMENT I,
+  LOAN L,
+  CUSTOMER C
+WHERE
+  I.LOAN_NO = L.LOAN_NO
+  AND L.CUST_NO = C.CUST_NO
+  AND C.NAME = 'RAJ ANAND SINGH';
+
+-- OR
+SELECT
+  I.INST_NO,
+  I.INST_AMOUNT
+FROM
+  INSTALLMENT I
+  JOIN LOAN L ON I.LOAN_NO = L.LOAN_NO
+  JOIN CUSTOMER C ON L.CUST_NO = C.CUST_NO
+WHERE
+  C.NAME = 'RAJ ANAND SINGH';
+
+-- (d)
+SELECT
+  C.NAME
+FROM
+  CUSTOMER C,
+  LOAN L,
+  INSTALLMENT I
+WHERE
+  C.CUST_NO = L.CUST_NO
+  AND L.LOAN_NO = I.LOAN_NO
+  AND I.INST_AMOUNT > 50000;
+
+-- OR
+SELECT
+  C.NAME
+FROM
+  CUSTOMER C
+  JOIN LOAN L ON C.CUST_NO = L.CUST_NO
+  JOIN INSTALLMENT I ON L.LOAN_NO = I.LOAN_NO
+WHERE
+  I.INST_AMOUNT > 50000;
+
+-- (e)
+SELECT
+  C.PHONE_NO
+FROM
+  CUSTOMER C,
+  DEPOSITOR D,
+  ACCOUNT A,
+  BRANCH B
+WHERE
+  C.CUST_NO = D.CUST_NO
+  AND D.ACCOUNT_NO = A.ACCOUNT_NO
+  AND A.BRANCH_CODE = B.BRANCH_CODE
+  AND B.BRANCH_NAME = 'SALTLAKE BRANCH';
+
+-- OR
+SELECT
+  C.PHONE_NO
+FROM
+  CUSTOMER C
+  JOIN DEPOSITOR D ON C.CUST_NO = D.CUST_NO
+  JOIN ACCOUNT A ON D.ACCOUNT_NO = A.ACCOUNT_NO
+  JOIN BRANCH B ON A.BRANCH_CODE = B.BRANCH_CODE
+WHERE
+  B.BRANCH_NAME = 'SALTLAKE BRANCH';
