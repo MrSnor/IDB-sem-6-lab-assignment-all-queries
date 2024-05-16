@@ -146,5 +146,8 @@ SELECT * FROM dual;
 
 
 
-
-
+-- Key commands -
+-- Primary key constraints - It is used to ensure that the values in a particular column are unique
+-- Foreign key constraints - It is used to ensure that the values in a particular column are present in another table
+-- Check constraints - It is used to ensure that the values in a particular column satisfies a particular condition
+-- Like constraints - It is used to ensure that the values in a particular column match a particular pattern
